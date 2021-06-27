@@ -1,0 +1,47 @@
+specVersion: 0.0.2
+description: IceBreak-R Prediction Wagering Icebreak
+repository: https://github.com/icebreak-r
+schema:
+  file: ./prediction.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Prediction
+    network: bsc
+    source:
+      address: '0xa4A3A93E5BD9041837d49fac51f644D80b4f3352'
+      abi: Prediction
+      startBlock: 6950840
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ../src/prediction/index.ts
+      entities:
+        - Market
+        - Round
+        - User
+        - Bet
+      abis:
+        - name: Prediction
+          file: ../abis/Prediction.json
+      eventHandlers:
+        - event: StartRound(indexed uint256,uint256)
+          handler: handleStartRound
+        - event: LockRound(indexed uint256,uint256,int256)
+          handler: handleLockRound
+        - event: EndRound(indexed uint256,uint256,int256)
+          handler: handleEndRound
+        - event: BetBull(indexed address,indexed uint256,uint256)
+          handler: handleBetBull
+        - event: BetBear(indexed address,indexed uint256,uint256)
+          handler: handleBetBear
+        - event: Claim(indexed address,indexed uint256,uint256)
+          handler: handleClaim
+        - event: Pause(uint256)
+          handler: handlePause
+        - event: Unpause(uint256)
+          handler: handleUnpause
+        - event: RatesUpdated(indexed uint256,uint256,uint256)
+          handler: handleRatesUpdated
+        - event: RewardsCalculated(indexed uint256,uint256,uint256,uint256)
+          handler: handleRewardsCalculated
